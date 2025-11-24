@@ -38,6 +38,11 @@ export default [
   },
   {
     files: ["**/*.astro"],
+    languageOptions: {
+      parserOptions: {
+        parser: tseslint.parser,
+      },
+    },
     rules: {
       // Allow unused expressions for DOM side-effect patterns (like forcing reflow)
       "@typescript-eslint/no-unused-expressions": "off",

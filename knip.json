@@ -4,5 +4,7 @@
     "interface": true,
     "type": true
   },
+  "ignoreDependencies": ["sharp", "eslint-plugin-jsx-a11y"],
+  "ignore": ["src/lib/utils.ts"],
   "tags": ["-lintignore"]
 }
