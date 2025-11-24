@@ -19,14 +19,6 @@ export default [
       sourceType: "module",
     },
     rules: {
-      semi: ["error", "always"],
-      quotes: [
-        "error",
-        "double",
-        {
-          allowTemplateLiterals: true,
-        },
-      ],
       "@typescript-eslint/triple-slash-reference": "off",
       "@typescript-eslint/no-unused-vars": [
         "error",
