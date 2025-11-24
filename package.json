@@ -10,7 +10,9 @@
     "preview:network": "astro preview --host",
     "astro": "astro",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@astrojs/check": "^0.9.5",
@@ -18,20 +20,28 @@
     "@astrojs/rss": "4.0.14",
     "@astrojs/sitemap": "^3.6.0",
     "@astrojs/tailwind": "^6.0.2",
-    "@fontsource/inter": "^5.0.17",
-    "@fontsource/lora": "^5.0.16",
-    "@tailwindcss/typography": "^0.5.10",
-    "@typescript-eslint/eslint-plugin": "^7.3.1",
-    "@typescript-eslint/parser": "^7.3.1",
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/lora": "^5.2.8",
+    "@tailwindcss/typography": "^0.5.19",
+    "@typescript-eslint/eslint-plugin": "^8.48.0",
+    "@typescript-eslint/parser": "^8.48.0",
     "astro": "^5.16.0",
-    "clsx": "^2.1.0",
-    "eslint": "^8.57.0",
-    "eslint-plugin-astro": "^0.32.0",
-    "eslint-plugin-jsx-a11y": "^6.8.0",
-    "sharp": "^0.33.3",
-    "tailwind-merge": "^2.2.2",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5.4.2"
+    "clsx": "^2.1.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-astro": "^1.5.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "sharp": "^0.34.5",
+    "tailwind-merge": "^3.4.0",
+    "tailwindcss": "^4.1.17",
+    "typescript": "^5.9.3"
   },
-  "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac"
+  "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac",
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.5.0",
+    "prettier": "^3.6.2",
+    "prettier-plugin-astro": "^0.14.1"
+  }
 }
