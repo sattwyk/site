@@ -81,16 +81,34 @@ const { title, description, image = "/nano.png" } = Astro.props;
 
 <script>
   import type { TransitionBeforeSwapEvent } from "astro:transitions/client";
-  document.addEventListener("astro:before-swap", (e) =>
+  document.addEventListener("astro:before-swap", (e) => {
+    // Remove duplicate font links
     [
       ...(e as TransitionBeforeSwapEvent).newDocument.head.querySelectorAll('link[as="font"]'),
-    ].forEach((link) => link.remove()),
-  );
+    ].forEach((link) => link.remove());
+
+    // Preserve dark mode class on the new document to prevent flash
+    const isDark = document.documentElement.classList.contains("dark");
+    if (isDark) {
+      (e as TransitionBeforeSwapEvent).newDocument.documentElement.classList.add("dark");
+    }
+  });
 </script>
 
 <script is:inline>
+  // Apply theme immediately to prevent flash - runs before page renders
+  (function () {
+    const theme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    if (theme === "dark" || (!theme && prefersDark)) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  })();
+
   function init() {
-    preloadTheme();
     onScroll();
     animate();
 
@@ -130,10 +148,40 @@ const { title, description, image = "/nano.png" } = Astro.props;
   function animate() {
     const animateElements = document.querySelectorAll(".animate");
 
+    // Use IntersectionObserver for better performance and scroll-triggered animations
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Stagger animation based on element index within viewport
+            const visibleAnimates = [...document.querySelectorAll(".animate")].filter(
+              (el) => !el.classList.contains("show"),
+            );
+            const index = visibleAnimates.indexOf(entry.target);
+            setTimeout(() => {
+              entry.target.classList.add("show");
+            }, index * 100);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" },
+    );
+
+    animateElements.forEach((element) => {
+      if (!element.classList.contains("show")) {
+        observer.observe(element);
+      }
+    });
+
+    // Fallback: Show elements above fold immediately with stagger
     animateElements.forEach((element, index) => {
-      setTimeout(() => {
-        element.classList.add("show");
-      }, index * 150);
+      const rect = element.getBoundingClientRect();
+      if (rect.top < window.innerHeight) {
+        setTimeout(() => {
+          element.classList.add("show");
+        }, index * 100);
+      }
     });
   }
 
@@ -154,45 +202,13 @@ const { title, description, image = "/nano.png" } = Astro.props;
   }
 
   function toggleTheme(dark) {
-    const css = document.createElement("style");
-
-    css.appendChild(
-      document.createTextNode(
-        `* {
-             -webkit-transition: none !important;
-             -moz-transition: none !important;
-             -o-transition: none !important;
-             -ms-transition: none !important;
-             transition: none !important;
-          }
-        `,
-      ),
-    );
-
-    document.head.appendChild(css);
-
     if (dark) {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
-
-    // Force reflow to ensure transition styles are applied
-    void window.getComputedStyle(css).opacity;
-    document.head.removeChild(css);
-  }
-
-  function preloadTheme() {
-    const userTheme = localStorage.theme;
-
-    if (userTheme === "light" || userTheme === "dark") {
-      toggleTheme(userTheme === "dark");
-    } else {
-      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
-    }
   }
 
   document.addEventListener("DOMContentLoaded", () => init());
   document.addEventListener("astro:after-swap", () => init());
-  preloadTheme();
 </script>

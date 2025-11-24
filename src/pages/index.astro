@@ -31,21 +31,23 @@ const work = await Promise.all(
 
 <PageLayout title={HOME.TITLE} description={HOME.DESCRIPTION}>
   <Container>
-    <h4 class="animate font-semibold text-black dark:text-white">Hi, I'm Satty 👋</h4>
+    <h4 class="animate font-semibold text-black dark:text-white text-lg">
+      Hi, I'm Satty <span class="inline-block animate-wave">👋</span>
+    </h4>
 
-    <div class="space-y-16">
+    <div class="space-y-16 mt-8">
       <!-- About / Intro -->
       <section>
         <article class="space-y-4">
-          <p class="animate">
+          <p class="animate leading-relaxed">
             I'm a software engineer who enjoys building and exploring distributed systems. This
             website is my space to share ideas, code snippets, and things I've learned.
           </p>
-          <p class="animate">
+          <p class="animate leading-relaxed">
             Here you'll find posts about software development, distributed systems, and thoughts on
             technology and learning.
           </p>
-          <p class="animate">
+          <p class="animate leading-relaxed">
             Built with Astro, Tailwind, and MDX. Check out the code on
             <Link href="https://github.com/sattwyk" aria-label="Satty on Github" external>
               GitHub
@@ -80,13 +82,15 @@ const work = await Promise.all(
         <ul class="flex flex-col space-y-4">
           {
             work.map((entry) => (
-              <li>
-                <div class="text-sm opacity-75">
+              <li class="group p-4 -mx-4 rounded-xl hover:bg-black/3 dark:hover:bg-white/3 transition-colors duration-300">
+                <div class="text-sm text-black/50 dark:text-white/50">
                   {dateRange(entry.data.dateStart, entry.data.dateEnd)}
                 </div>
-                <div class="font-semibold text-black dark:text-white">{entry.data.company}</div>
-                <div class="text-sm opacity-75">{entry.data.role}</div>
-                <article>
+                <div class="font-semibold text-black dark:text-white mt-1">
+                  {entry.data.company}
+                </div>
+                <div class="text-sm text-black/60 dark:text-white/60">{entry.data.role}</div>
+                <article class="mt-2">
                   <entry.Content />
                 </article>
               </li>
@@ -116,7 +120,9 @@ const work = await Promise.all(
       <section class="animate space-y-4">
         <h5 class="font-semibold text-black dark:text-white">Let's Connect</h5>
         <article>
-          <p>Feel free to reach out through social media or email if you'd like to connect.</p>
+          <p class="leading-relaxed">
+            Feel free to reach out through social media or email if you'd like to connect.
+          </p>
         </article>
         <ul class="flex flex-wrap gap-2">
           {
@@ -139,3 +145,23 @@ const work = await Promise.all(
     </div>
   </Container>
 </PageLayout>
+
+<style>
+  @keyframes wave {
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(20deg);
+    }
+    75% {
+      transform: rotate(-15deg);
+    }
+  }
+
+  .animate-wave {
+    animation: wave 2.5s ease-in-out infinite;
+    transform-origin: 70% 70%;
+  }
+</style>
