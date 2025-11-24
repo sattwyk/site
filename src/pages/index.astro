@@ -18,11 +18,7 @@ const projects = (await getCollection("projects"))
   .slice(0, SITE.NUM_PROJECTS_ON_HOMEPAGE);
 
 const allwork = (await getCollection("work"))
-  .sort(
-    (a, b) =>
-      new Date(b.data.dateStart).valueOf() -
-      new Date(a.data.dateStart).valueOf(),
-  )
+  .sort((a, b) => new Date(b.data.dateStart).valueOf() - new Date(a.data.dateStart).valueOf())
   .slice(0, SITE.NUM_WORKS_ON_HOMEPAGE);
 
 const work = await Promise.all(
@@ -35,30 +31,23 @@ const work = await Promise.all(
 
 <PageLayout title={HOME.TITLE} description={HOME.DESCRIPTION}>
   <Container>
-    <h4 class="animate font-semibold text-black dark:text-white">
-      Hi, I'm Satty 👋
-    </h4>
+    <h4 class="animate font-semibold text-black dark:text-white">Hi, I'm Satty 👋</h4>
 
     <div class="space-y-16">
       <!-- About / Intro -->
       <section>
         <article class="space-y-4">
           <p class="animate">
-            I'm a software engineer who enjoys building and exploring
-            distributed systems. This website is my space to share ideas, code
-            snippets, and things I've learned.
+            I'm a software engineer who enjoys building and exploring distributed systems. This
+            website is my space to share ideas, code snippets, and things I've learned.
           </p>
           <p class="animate">
-            Here you'll find posts about software development, distributed
-            systems, and thoughts on technology and learning.
+            Here you'll find posts about software development, distributed systems, and thoughts on
+            technology and learning.
           </p>
           <p class="animate">
             Built with Astro, Tailwind, and MDX. Check out the code on
-            <Link
-              href="https://github.com/sattwyk"
-              aria-label="Satty on Github"
-              external
-            >
+            <Link href="https://github.com/sattwyk" aria-label="Satty on Github" external>
               GitHub
             </Link>.
           </p>
@@ -85,9 +74,7 @@ const work = await Promise.all(
       <!-- Work Experience -->
       <section class="animate space-y-6">
         <div class="flex flex-wrap gap-y-2 items-center justify-between">
-          <h5 class="font-semibold text-black dark:text-white">
-            Work Experience
-          </h5>
+          <h5 class="font-semibold text-black dark:text-white">Work Experience</h5>
           <Link href="/work"> See all work </Link>
         </div>
         <ul class="flex flex-col space-y-4">
@@ -97,9 +84,7 @@ const work = await Promise.all(
                 <div class="text-sm opacity-75">
                   {dateRange(entry.data.dateStart, entry.data.dateEnd)}
                 </div>
-                <div class="font-semibold text-black dark:text-white">
-                  {entry.data.company}
-                </div>
+                <div class="font-semibold text-black dark:text-white">{entry.data.company}</div>
                 <div class="text-sm opacity-75">{entry.data.role}</div>
                 <article>
                   <entry.Content />
@@ -113,9 +98,7 @@ const work = await Promise.all(
       <!-- Recent Projects -->
       <section class="animate space-y-6">
         <div class="flex flex-wrap gap-y-2 items-center justify-between">
-          <h5 class="font-semibold text-black dark:text-white">
-            Recent projects
-          </h5>
+          <h5 class="font-semibold text-black dark:text-white">Recent projects</h5>
           <Link href="/projects"> See all projects </Link>
         </div>
         <ul class="flex flex-col gap-4">
@@ -133,20 +116,13 @@ const work = await Promise.all(
       <section class="animate space-y-4">
         <h5 class="font-semibold text-black dark:text-white">Let's Connect</h5>
         <article>
-          <p>
-            Feel free to reach out through social media or email if you'd like
-            to connect.
-          </p>
+          <p>Feel free to reach out through social media or email if you'd like to connect.</p>
         </article>
         <ul class="flex flex-wrap gap-2">
           {
             SOCIALS.map((SOCIAL) => (
               <li class="flex gap-x-2 text-nowrap">
-                <Link
-                  href={SOCIAL.HREF}
-                  external
-                  aria-label={`${SITE.NAME} on ${SOCIAL.NAME}`}
-                >
+                <Link href={SOCIAL.HREF} external aria-label={`${SITE.NAME} on ${SOCIAL.NAME}`}>
                   {SOCIAL.NAME}
                 </Link>
                 {"/"}
@@ -154,10 +130,7 @@ const work = await Promise.all(
             ))
           }
           <li class="line-clamp-1">
-            <Link
-              href={`mailto:${SITE.EMAIL}`}
-              aria-label={`Email ${SITE.NAME}`}
-            >
+            <Link href={`mailto:${SITE.EMAIL}`} aria-label={`Email ${SITE.NAME}`}>
               {SITE.EMAIL}
             </Link>
           </li>
