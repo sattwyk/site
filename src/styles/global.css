@@ -181,20 +181,68 @@ html.scrolled #back-to-top {
   @apply shadow-lg shadow-stone-900/5 dark:shadow-stone-900/30;
 }
 
-/* Text selection */
+/* Text selection - vibrant and visible */
 ::selection {
-  @apply bg-stone-800/20 dark:bg-stone-200/20;
+  @apply bg-indigo-500/30 text-black;
+}
+
+.dark ::selection {
+  @apply bg-indigo-400/40 text-white;
+}
+
+/* Custom cursor styles */
+html {
+  cursor: default;
+}
+
+/* Interactive elements cursor */
+a,
+button,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+select {
+  cursor: pointer;
+}
+
+/* Text input cursor */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+textarea {
+  cursor: text;
+  caret-color: theme("colors.indigo.500");
+}
+
+.dark input[type="text"],
+.dark input[type="email"],
+.dark input[type="password"],
+.dark input[type="search"],
+.dark textarea {
+  caret-color: theme("colors.indigo.400");
 }
 
 /* Focus states */
 :focus-visible {
-  @apply outline-none ring-2 ring-stone-400 dark:ring-stone-500 ring-offset-2 ring-offset-stone-100 dark:ring-offset-stone-950;
+  @apply outline-none ring-2 ring-indigo-400 dark:ring-indigo-500 ring-offset-2 ring-offset-stone-100 dark:ring-offset-stone-950;
   @apply rounded-sm;
 }
 
 /* Smooth image loading */
 img {
   @apply transition-opacity duration-500 ease-out;
+}
+
+/* Interactive element hover effects */
+a,
+button {
+  @apply transition-all duration-200 ease-out;
+}
+
+a:active,
+button:active {
+  transform: scale(0.98);
 }
 
 /* Subtle text gradient for headings on hover */
