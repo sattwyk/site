@@ -6,6 +6,9 @@
     "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol", "Noto Color Emoji";
   --font-serif: "Lora", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
 
   /* Custom animation timings */
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);

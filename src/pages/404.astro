@@ -1,0 +1,104 @@
+---
+import PageLayout from "@layouts/PageLayout.astro";
+import Container from "@components/Container.astro";
+import Link from "@components/Link.astro";
+---
+
+<PageLayout title="404 - Page Not Found" description="Oops! This page doesn't exist.">
+  <Container>
+    <div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
+      <!-- Patrick Image -->
+      <div class="relative mb-8 group">
+        <img
+          src="/patrick.webp"
+          alt="Patrick Star looking confused"
+          class="patrick-img w-48 h-48 object-cover rounded-2xl shadow-xl shadow-stone-900/10 dark:shadow-stone-900/30"
+        />
+        <div
+          class="absolute -top-4 -right-4 bg-white dark:bg-stone-800 px-3 py-1 rounded-full text-sm font-medium shadow-lg rotate-12 border border-black/10 dark:border-white/10"
+        >
+          ???
+        </div>
+      </div>
+
+      <!-- Text Content -->
+      <h1 class="text-7xl font-bold text-black dark:text-white mb-4">404</h1>
+
+      <p class="text-xl text-black/70 dark:text-white/70 mb-2">
+        "Is this the page you're looking for?"
+      </p>
+
+      <p class="text-lg text-black/50 dark:text-white/50 mb-8">"No, this is Patrick."</p>
+
+      <div class="flex flex-col sm:flex-row gap-4 items-center">
+        <a
+          href="/"
+          class="group relative flex items-center gap-2 pl-3 pr-8 py-1.5 rounded-full border border-black/10 dark:border-white/15 bg-white/50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 hover:border-black/20 dark:hover:border-white/25 text-current hover:text-black dark:hover:text-white transition-all duration-300 ease-out hover:shadow-md hover:shadow-stone-900/5 dark:hover:shadow-stone-900/20 text-sm font-medium"
+        >
+          Take me home
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            class="absolute top-1/2 right-2 -translate-y-1/2 size-4 stroke-2 fill-none stroke-current"
+          >
+            <line
+              x1="5"
+              y1="12"
+              x2="19"
+              y2="12"
+              class="translate-x-3 group-hover:translate-x-0 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"
+            ></line>
+            <polyline
+              points="12 5 19 12 12 19"
+              class="-translate-x-1 group-hover:translate-x-0 transition-transform duration-300 ease-out"
+            ></polyline>
+          </svg>
+        </a>
+        <Link
+          href="/blog"
+          class="text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white text-sm"
+        >
+          or check out the blog
+        </Link>
+      </div>
+
+      <!-- Fun Easter Egg Text -->
+      <p class="mt-16 text-xs text-black/30 dark:text-white/30 max-w-sm">
+        Fun fact: You've discovered a page that doesn't exist. Patrick approves of your adventurous
+        spirit. 🌟
+      </p>
+    </div>
+  </Container>
+</PageLayout>
+
+<style>
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px) scale(1) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-6px) scale(1) rotate(0deg);
+    }
+  }
+
+  @keyframes float-hover {
+    0%,
+    100% {
+      transform: translateY(0px) scale(1.02) rotate(1deg);
+    }
+    50% {
+      transform: translateY(-6px) scale(1.02) rotate(1deg);
+    }
+  }
+
+  .patrick-img {
+    animation: float 5s ease-in-out infinite;
+    transition: filter 0.5s ease-out;
+  }
+
+  .group:hover .patrick-img {
+    animation: float-hover 5s ease-in-out infinite;
+    filter: brightness(1.02);
+  }
+</style>
