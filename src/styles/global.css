@@ -62,16 +62,26 @@ body::before {
 
 header {
   @apply fixed top-0 left-0 right-0 z-50 py-5;
-  @apply bg-stone-100/80 dark:bg-stone-950/80;
-  @apply backdrop-blur-md saturate-150;
   @apply border-b border-transparent;
   @apply transition-all duration-300 ease-out;
+  background-color: rgb(245 245 244 / 0.4);
+  -webkit-backdrop-filter: blur(24px) saturate(2);
+  backdrop-filter: blur(24px) saturate(2);
+}
+
+html.dark header {
+  background-color: rgb(12 10 9 / 0.4);
 }
 
 html.scrolled header {
   @apply py-3;
   @apply border-stone-200/50 dark:border-stone-800/50;
   @apply shadow-sm shadow-stone-900/5 dark:shadow-stone-900/20;
+  background-color: rgb(245 245 244 / 0.5);
+}
+
+html.dark.scrolled header {
+  background-color: rgb(12 10 9 / 0.5);
 }
 
 main {
