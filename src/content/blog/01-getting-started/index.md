@@ -1,7 +1,8 @@
 ---
-title: "What is software ?"
-description: "Hit the ground running."
+title: "what is software ?"
+description: "hit the ground running."
 date: "Feb 01 2026"
+draft: true
 ---
 
 The basic configuration of Nano is pretty simple.
