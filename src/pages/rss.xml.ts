@@ -19,11 +19,16 @@ export async function GET(context: Context) {
     title: HOME.TITLE,
     description: HOME.DESCRIPTION,
     site: context.site,
-    items: items.map((item) => ({
-      title: item.data.title,
-      description: item.data.description,
-      pubDate: item.data.date,
-      link: `/${item.collection}/${item.id}/`,
-    })),
+    items: items.map((item) => {
+      const link =
+        item.collection === "blog" ? `/blog/${item.id}/` : `/${item.collection}/${item.id}/`;
+
+      return {
+        title: item.data.title,
+        description: item.data.description,
+        pubDate: item.data.date,
+        link,
+      };
+    }),
   });
 }
