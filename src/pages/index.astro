@@ -20,7 +20,7 @@ const projects = (await getCollection("projects"))
 <PageLayout title={HOME.TITLE} description={HOME.DESCRIPTION}>
   <Container>
     <h4 class="animate font-semibold text-black dark:text-white text-lg">
-      Hi, I'm Satty <span class="inline-block animate-wave">👋</span>
+      hi, i'm satty <span class="inline-block animate-wave">👋</span>
     </h4>
 
     <div class="space-y-16 mt-8">
@@ -28,18 +28,26 @@ const projects = (await getCollection("projects"))
       <section>
         <article class="space-y-4">
           <p class="animate leading-relaxed">
-            I'm a software engineer who enjoys building and exploring distributed systems. This
-            website is my space to share ideas, code snippets, and things I've learned.
+            currently building <Link
+              href="https://mailmon.app"
+              external
+              aria-label="Mailmon, an email assistant that lives in your chat">mailmon</Link
+            >. i'm a software engineer, with experience in building products and infra at early
+            stage environments.
           </p>
           <p class="animate leading-relaxed">
-            Here you'll find posts about software development, distributed systems, and thoughts on
-            technology and learning.
+            i deeply care about building useful things and share things that i learn along the way.
+            this is my little corner of the internet where i do just that.
           </p>
           <p class="animate leading-relaxed">
-            Built with Astro, Tailwind, and MDX. Check out the code on
-            <Link href="https://github.com/sattwyk" aria-label="Satty on Github" external>
-              GitHub
-            </Link>.
+            apart from writing code, i enjoy cooking, and love reading anything i can get my hands
+            on <Link
+              href="https://www.conjectureinstitute.org/glossary#critical-rationalism"
+              external
+              aria-label="Critical Rationalism"
+            >
+              critical rationalism
+            </Link> and philosophy.
           </p>
         </article>
       </section>
@@ -47,8 +55,8 @@ const projects = (await getCollection("projects"))
       <!-- Latest Posts -->
       <section class="animate space-y-6">
         <div class="flex flex-wrap gap-y-2 items-center justify-between">
-          <h5 class="font-semibold text-black dark:text-white">Latest posts</h5>
-          <Link href="/blog"> See all posts </Link>
+          <h5 class="font-semibold text-black dark:text-white">latest posts</h5>
+          <Link href="/blog"> see all posts </Link>
         </div>
         <ul class="flex flex-col gap-4">
           {
@@ -64,8 +72,8 @@ const projects = (await getCollection("projects"))
       <!-- Recent Projects -->
       <section class="animate space-y-6">
         <div class="flex flex-wrap gap-y-2 items-center justify-between">
-          <h5 class="font-semibold text-black dark:text-white">Recent projects</h5>
-          <Link href="/projects"> See all projects </Link>
+          <h5 class="font-semibold text-black dark:text-white">recent projects</h5>
+          <Link href="/projects"> see all projects </Link>
         </div>
         <ul class="flex flex-col gap-4">
           {
@@ -80,11 +88,9 @@ const projects = (await getCollection("projects"))
 
       <!-- Social / Contact -->
       <section class="animate space-y-4">
-        <h5 class="font-semibold text-black dark:text-white">Let's Connect</h5>
+        <h5 class="font-semibold text-black dark:text-white">let's connect</h5>
         <article>
-          <p class="leading-relaxed">
-            Feel free to reach out through social media or email if you'd like to connect.
-          </p>
+          <p class="leading-relaxed">you can find me on social media or shoot me an email.</p>
         </article>
         <ul class="flex flex-wrap gap-2">
           {
