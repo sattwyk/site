@@ -1,31 +1,25 @@
 import type { Site, Metadata, Socials } from "@types";
 
 export const SITE: Site = {
-  NAME: "Sattwik Raj Biswal",
-  EMAIL: "hi [at] sattwyk.com",
+  NAME: "sattwik raj biswal",
+  EMAIL: "hi@sattwyk.com",
   NUM_POSTS_ON_HOMEPAGE: 3,
-  NUM_WORKS_ON_HOMEPAGE: 2,
   NUM_PROJECTS_ON_HOMEPAGE: 3,
 };
 
 export const HOME: Metadata = {
-  TITLE: "Home",
-  DESCRIPTION: "Astro Nano is a minimal and lightweight blog and portfolio.",
+  TITLE: "hi, i'm satty",
+  DESCRIPTION: "a software engineer with a passion for building things and sharing knowledge.",
 };
 
 export const BLOG: Metadata = {
-  TITLE: "Blog",
-  DESCRIPTION: "A collection of articles on topics I am passionate about.",
-};
-
-export const WORK: Metadata = {
-  TITLE: "Work",
-  DESCRIPTION: "Where I have worked and what I have done.",
+  TITLE: "things i've written",
+  DESCRIPTION: "some of my thoughts on software development, technology, and other musings.",
 };
 
 export const PROJECTS: Metadata = {
-  TITLE: "Projects",
-  DESCRIPTION: "A collection of my projects, with links to repositories and demos.",
+  TITLE: "things i've built",
+  DESCRIPTION: "things i've built and contributed to.",
 };
 
 export const SOCIALS: Socials = [

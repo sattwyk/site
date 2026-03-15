@@ -1,67 +1,51 @@
-![Astro Nano](_astro_nano.png)
+# sattwyk.com
 
-Astro Nano is a static, minimalist, lightweight, lightning fast portfolio and blog theme.
+Personal site built with Astro, Tailwind CSS, and TypeScript.
 
-Built with Astro, Tailwind and Typescript, an no frameworks.
+## Development
 
-It was designed as an even more minimal theme than my popular theme [Astro Sphere](https://github.com/markhorn-dev/astro-sphere)
+Install dependencies:
 
-## 🚀 Deploy your own
+```bash
+pnpm install
+```
 
-[![Deploy with Vercel](_deploy_vercel.svg)](https://vercel.com/new/clone?repository-url=https://github.com/markhorn-dev/astro-nano) [![Deploy with Netlify](_deploy_netlify.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/markhorn-dev/astro-nano)
+Start the dev server:
 
-## 📋 Features
+```bash
+pnpm dev
+```
 
-- ✅ 100/100 Lighthouse performance
-- ✅ Responsive
-- ✅ Accessible
-- ✅ SEO-friendly
-- ✅ Typesafe
-- ✅ Minimal style
-- ✅ Light/Dark Theme
-- ✅ Animated UI
-- ✅ Tailwind styling
-- ✅ Auto generated sitemap
-- ✅ Auto generated RSS Feed
-- ✅ Markdown support
-- ✅ MDX Support (components in your markdown)
+Run checks and create a production build:
 
-## 💯 Lighthouse score
+```bash
+pnpm build
+```
 
-![Astro Nano Lighthouse Score](_lighthouse.png)
+Useful commands:
 
-## 🕊️ Lightweight
+| Command            | Purpose                                   |
+| :----------------- | :---------------------------------------- |
+| `pnpm dev`         | Start the local Astro dev server          |
+| `pnpm dev:network` | Start the dev server on the local network |
+| `pnpm build`       | Run `astro check` and build the site      |
+| `pnpm preview`     | Preview the production build locally      |
+| `pnpm lint`        | Run ESLint                                |
+| `pnpm format`      | Run Prettier across the repo              |
 
-No frameworks or added bulk
+## Content
 
-## ⚡︎ Fast
+- Blog posts live in `src/content/blog`
+- Projects live in `src/content/projects`
+- Content collections are defined in `src/content.config.ts`
 
-Rendered in ~40ms on localhost
+## Stack
 
-## 📄 Configuration
+- Astro
+- Tailwind CSS
+- TypeScript
+- MDX
 
-The blog posts on the demo serve as the documentation and configuration.
-
-## 💻 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-Replace npm with your package manager of choice. `npm`, `pnpm`, `yarn`, `bun`, etc
-
-| Command                   | Action                                            |
-| :------------------------ | :------------------------------------------------ |
-| `npm install`             | Installs dependencies                             |
-| `npm run dev`             | Starts local dev server at `localhost:4321`       |
-| `npm run dev:network`     | Starts local dev server on local network          |
-| `npm run sync`            | Generates TypeScript types for all Astro modules. |
-| `npm run build`           | Build your production site to `./dist/`           |
-| `npm run preview`         | Preview your build locally, before deploying      |
-| `npm run preview:network` | Preview build on local network                    |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check`  |
-| `npm run astro -- --help` | Get help using the Astro CLI                      |
-| `npm run lint`            | Run ESLint                                        |
-| `npm run lint:fix`        | Auto-fix ESLint issues                            |
-
-## 🏛️ License
+## License
 
 MIT

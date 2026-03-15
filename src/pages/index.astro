@@ -4,7 +4,6 @@ import Container from "@components/Container.astro";
 import PageLayout from "@layouts/PageLayout.astro";
 import ArrowCard from "@components/ArrowCard.astro";
 import Link from "@components/Link.astro";
-import { dateRange } from "@lib/utils";
 import { SITE, HOME, SOCIALS } from "@consts";
 
 const blog = (await getCollection("blog"))
@@ -16,40 +15,39 @@ const projects = (await getCollection("projects"))
   .filter((project) => !project.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, SITE.NUM_PROJECTS_ON_HOMEPAGE);
-
-const allwork = (await getCollection("work"))
-  .sort((a, b) => new Date(b.data.dateStart).valueOf() - new Date(a.data.dateStart).valueOf())
-  .slice(0, SITE.NUM_WORKS_ON_HOMEPAGE);
-
-const work = await Promise.all(
-  allwork.map(async (item) => {
-    const { Content } = await item.render();
-    return { ...item, Content };
-  }),
-);
 ---
 
 <PageLayout title={HOME.TITLE} description={HOME.DESCRIPTION}>
   <Container>
-    <h4 class="animate font-semibold text-black dark:text-white">Hi, I'm Satty 👋</h4>
+    <h4 class="animate font-semibold text-black dark:text-white text-lg">
+      hi, i'm satty <span class="inline-block animate-wave">👋</span>
+    </h4>
 
-    <div class="space-y-16">
+    <div class="space-y-16 mt-8">
       <!-- About / Intro -->
       <section>
         <article class="space-y-4">
-          <p class="animate">
-            I'm a software engineer who enjoys building and exploring distributed systems. This
-            website is my space to share ideas, code snippets, and things I've learned.
+          <p class="animate leading-relaxed">
+            currently building <Link
+              href="https://mailmon.app"
+              external
+              aria-label="Mailmon, an email assistant that lives in your chat">mailmon</Link
+            >. i'm a software engineer, with experience in building products and infra at early
+            stage environments.
           </p>
-          <p class="animate">
-            Here you'll find posts about software development, distributed systems, and thoughts on
-            technology and learning.
+          <p class="animate leading-relaxed">
+            i deeply care about building useful things and share things that i learn along the way.
+            this is my little corner of the internet where i do just that.
           </p>
-          <p class="animate">
-            Built with Astro, Tailwind, and MDX. Check out the code on
-            <Link href="https://github.com/sattwyk" aria-label="Satty on Github" external>
-              GitHub
-            </Link>.
+          <p class="animate leading-relaxed">
+            apart from writing code, i enjoy cooking, and love reading anything i can get my hands
+            on about <Link
+              href="https://www.conjectureinstitute.org/glossary#critical-rationalism"
+              external
+              aria-label="Critical Rationalism"
+            >
+              critical rationalism
+            </Link> and philosophy.
           </p>
         </article>
       </section>
@@ -57,8 +55,8 @@ const work = await Promise.all(
       <!-- Latest Posts -->
       <section class="animate space-y-6">
         <div class="flex flex-wrap gap-y-2 items-center justify-between">
-          <h5 class="font-semibold text-black dark:text-white">Latest posts</h5>
-          <Link href="/blog"> See all posts </Link>
+          <h5 class="font-semibold text-black dark:text-white">latest posts</h5>
+          <Link href="/blog"> see all posts </Link>
         </div>
         <ul class="flex flex-col gap-4">
           {
@@ -71,35 +69,11 @@ const work = await Promise.all(
         </ul>
       </section>
 
-      <!-- Work Experience -->
-      <section class="animate space-y-6">
-        <div class="flex flex-wrap gap-y-2 items-center justify-between">
-          <h5 class="font-semibold text-black dark:text-white">Work Experience</h5>
-          <Link href="/work"> See all work </Link>
-        </div>
-        <ul class="flex flex-col space-y-4">
-          {
-            work.map((entry) => (
-              <li>
-                <div class="text-sm opacity-75">
-                  {dateRange(entry.data.dateStart, entry.data.dateEnd)}
-                </div>
-                <div class="font-semibold text-black dark:text-white">{entry.data.company}</div>
-                <div class="text-sm opacity-75">{entry.data.role}</div>
-                <article>
-                  <entry.Content />
-                </article>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-
       <!-- Recent Projects -->
       <section class="animate space-y-6">
         <div class="flex flex-wrap gap-y-2 items-center justify-between">
-          <h5 class="font-semibold text-black dark:text-white">Recent projects</h5>
-          <Link href="/projects"> See all projects </Link>
+          <h5 class="font-semibold text-black dark:text-white">recent projects</h5>
+          <Link href="/projects"> see all projects </Link>
         </div>
         <ul class="flex flex-col gap-4">
           {
@@ -114,9 +88,9 @@ const work = await Promise.all(
 
       <!-- Social / Contact -->
       <section class="animate space-y-4">
-        <h5 class="font-semibold text-black dark:text-white">Let's Connect</h5>
+        <h5 class="font-semibold text-black dark:text-white">let's connect</h5>
         <article>
-          <p>Feel free to reach out through social media or email if you'd like to connect.</p>
+          <p class="leading-relaxed">you can find me on social media or shoot me an email.</p>
         </article>
         <ul class="flex flex-wrap gap-2">
           {
@@ -139,3 +113,23 @@ const work = await Promise.all(
     </div>
   </Container>
 </PageLayout>
+
+<style>
+  @keyframes wave {
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(20deg);
+    }
+    75% {
+      transform: rotate(-15deg);
+    }
+  }
+
+  .animate-wave {
+    animation: wave 2.5s ease-in-out infinite;
+    transform-origin: 70% 70%;
+  }
+</style>
