@@ -6,7 +6,7 @@
     "dev": "astro dev",
     "dev:network": "astro dev --host",
     "build": "astro check && astro build",
-    "preview": "astro preview",
+    "preview": "pnpm run build && wrangler dev",
     "preview:network": "astro preview --host",
     "astro": "astro",
     "lint": "eslint .",
@@ -15,10 +15,13 @@
     "format:check": "prettier --check .",
     "prepare": "husky",
     "knip": "knip",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "generate-types": "wrangler types",
+    "deploy": "pnpm run build && wrangler deploy"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.7",
+    "@astrojs/cloudflare": "^13.1.1",
     "@astrojs/mdx": "^5.0.0",
     "@astrojs/rss": "4.0.17",
     "@astrojs/sitemap": "^3.7.1",
@@ -49,6 +52,7 @@
     "prettier": "^3.7.4",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.49.0"
+    "typescript-eslint": "^8.49.0",
+    "wrangler": "^4.73.0"
   }
 }
