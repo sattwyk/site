@@ -28,17 +28,21 @@ const projects = (await getCollection("projects"))
       <section>
         <article class="space-y-4">
           <p class="animate leading-relaxed">
-            currently building <Link
-              href="https://mailmon.app"
+            i'm a software engineer interested in backend systems, distributed systems and
+            correctness. currently building <Link
+              href="https://github.com/sattwyk/adversary"
               external
-              aria-label="Mailmon, an email assistant that lives in your chat">mailmon</Link
-            >. i'm a software engineer, with experience in building products and infra at early
-            stage environments.
+              aria-label="Adversary, a deterministic simulation testing harness"
+            >
+              adversary
+            </Link>, a deterministic simulation testing harness in rust + webassembly.
           </p>
+
           <p class="animate leading-relaxed">
-            i deeply care about building useful things and share things that i learn along the way.
-            this is my little corner of the internet where i do just that.
+            i like building things to understand how they work, especially systems that have to
+            behave correctly when things fail. i also write about things i'm learning along the way.
           </p>
+
           <p class="animate leading-relaxed">
             apart from writing code, i enjoy cooking, and love reading anything i can get my hands
             on about <Link
@@ -51,7 +55,6 @@ const projects = (await getCollection("projects"))
           </p>
         </article>
       </section>
-
       <!-- Latest Posts -->
       <section class="animate space-y-6">
         <div class="flex flex-wrap gap-y-2 items-center justify-between">
