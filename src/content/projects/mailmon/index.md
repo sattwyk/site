@@ -1,7 +1,7 @@
 ---
 title: "mailmon"
 description: "gmail sync infrastructure for keeping mailbox state correct"
-date: "Aug 30 2025"
+date: "Jul 30 2026"
 repoURL: "https://github.com/mailmon-dev/mailmon-old"
 ---
 
