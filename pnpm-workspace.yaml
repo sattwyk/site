@@ -1,6 +1,6 @@
-onlyBuiltDependencies:
-  - esbuild
-  - sharp
+allowBuilds:
+  esbuild: true
+  sharp: true
 
 minimumReleaseAgeExclude:
   - "@napi-rs/wasm-runtime@1.2.4"
