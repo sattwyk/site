@@ -1,16 +1,20 @@
 ---
 title: "mailmon"
-description: "an ai email assistant that lives in your chat"
+description: "gmail sync infrastructure for keeping mailbox state correct"
 date: "Aug 30 2025"
-demoURL: "https://mailmon.app"
+repoURL: "https://github.com/mailmon-dev/mailmon-old"
 ---
 
-> currently in development. [join the waitlist](https://mailmon.app) for alpha access.
+> this project is currently not maintained. i've moved on to building [adversary](https://github.com/sattwyk/adversary), but i want to come back to mailmon at some point and probably rewrite the core in rust.
 
-an ai-powered email assistant that operates through telegram, helping you manage your inbox without losing control. instead of constantly checking gmail, mailmon watches incoming emails, drafts replies, extracts commitments, and asks for approval before taking action.
+mailmon started as an ai email assistant, but over time the part i found more interesting was everything underneath it: keeping a local view of a gmail mailbox correct while notifications can be duplicated, delayed or missed and workers can fail halfway through doing something.
 
-email isn't just messaging—it's where commitments are created, tracked, and forgotten. most ai email tools fail because they try to automate everything. mailmon focuses on trust-first automation: intelligent triage, safe reply drafting, commitment tracking, and lightweight approvals through chat.
+the system treats gmail push notifications as wake-up signals rather than the source of truth. actual changes are recovered from gmail history, and the history cursor only advances after the corresponding mailbox state has been committed.
 
-every email passes through a structured decision pipeline—thread reconstruction, summarization, classification, action planning, then user approval. the system operates within defined trust zones: green (safe automation like archiving newsletters), yellow (drafts replies but waits for approval), and red (refuses to act on sensitive emails).
+a lot of the work ended up being around fairly boring but important failure cases: concurrent sync workers, retries, duplicate events, partial failures, expired history cursors and making sure processing the same thing twice doesn't corrupt state.
 
-built with a telegram control interface for now, with plans to expand to whatsapp and slack. the goal isn't to remove humans from email, but to make email manageable again.
+mailmon also has an append-only event log and webhook delivery built around at-least-once semantics, with replay and consumer-side deduplication instead of pretending exactly-once delivery exists.
+
+the current implementation uses postgres for durable state, lease-based locking for synchronization, encrypted oauth credentials and gcp for asynchronous work.
+
+it started as a product idea, but ended up being one of the projects that pushed me much deeper into distributed systems and correctness. if i revisit it, i'd like to strip it down further and rewrite the synchronization core in rust.
