@@ -99,20 +99,6 @@ article {
   @apply prose-headings:text-black prose-headings:dark:text-white;
 }
 
-/* Improved article link styles */
-@layer utilities {
-  article a {
-    @apply font-sans text-current underline underline-offset-2;
-    @apply decoration-black/20 dark:decoration-white/30;
-    @apply transition-all duration-300 ease-out;
-  }
-  article a:hover {
-    @apply text-black dark:text-white;
-    @apply decoration-black/40 dark:decoration-white/50;
-    @apply underline-offset-4;
-  }
-}
-
 /* Enhanced stagger animations */
 .animate {
   @apply opacity-0;
@@ -272,4 +258,418 @@ button:active {
 
 .dark .heading-gradient:hover {
   background: linear-gradient(135deg, #ffffff 0%, #d4d4d4 100%);
+}
+
+/* A quiet page, with room to think in the margins. */
+@font-face {
+  font-family: "Handwritten";
+  src: url("/fonts/handwritten.woff2") format("woff2");
+  font-display: swap;
+}
+:root {
+  --paper: #faf9f6;
+  --ink: #353530;
+  --muted: #85837c;
+  --rule: #e8e6df;
+  --pencil: #8b6045;
+}
+html,
+body {
+  background: var(--paper);
+  color: var(--ink);
+}
+html.dark {
+  --paper: #1c1d1b;
+  --ink: #deded7;
+  --muted: #a4a39a;
+  --rule: #383a34;
+  --pencil: #cfaa87;
+  background: var(--paper);
+}
+body::before {
+  display: none;
+}
+.site-container {
+  max-width: 680px;
+}
+header,
+html.scrolled header,
+html.dark header,
+html.dark.scrolled header {
+  position: relative;
+  padding: 48px 0 0;
+  background: none;
+  backdrop-filter: none;
+  border: none;
+  box-shadow: none;
+}
+header nav {
+  color: var(--muted);
+}
+main {
+  padding: 64px 0 110px;
+}
+footer {
+  padding-bottom: 40px;
+}
+article {
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--ink);
+}
+article p,
+article li {
+  font-family: var(--font-sans);
+}
+article strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+article h2 {
+  font-size: 17px;
+  line-height: 1.5;
+  font-weight: 600;
+  margin: 3.8em 0 1.4em;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: var(--ink);
+}
+article h2::after {
+  content: "";
+  height: 1px;
+  background: var(--rule);
+  flex: 1;
+}
+article h3 {
+  font-size: 16px;
+}
+article p {
+  margin: 1.35em 0;
+}
+/* One link treatment for intro copy, Markdown, and quoted article blocks. */
+.text-link,
+article a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  text-underline-offset: 3px;
+  transition:
+    color 200ms ease-out,
+    text-decoration-color 200ms ease-out,
+    text-underline-offset 200ms ease-out;
+}
+.text-link:hover,
+.text-link:focus-visible,
+article a:hover,
+article a:focus-visible {
+  color: var(--pencil);
+  text-decoration-color: currentColor;
+  text-underline-offset: 4px;
+}
+.text-link:active,
+article a:active {
+  transform: none;
+}
+
+article blockquote {
+  border-left: 1px solid var(--rule);
+  padding-left: 22px;
+  font-weight: 400;
+  font-style: normal;
+  color: var(--muted);
+}
+article blockquote p::before,
+article blockquote p::after {
+  content: none;
+}
+article pre {
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  padding: 20px 24px;
+  font-size: 12px;
+  line-height: 1.8;
+  background: #f1f0eb !important;
+  color: #343b35 !important;
+  overflow-x: auto;
+}
+
+.dark article pre span {
+  color: var(--shiki-dark) !important;
+}
+.dark article pre {
+  background: #242620 !important;
+  color: #dfdfd4 !important;
+}
+article :not(pre) > code {
+  font-size: 0.84em;
+  font-weight: 400;
+  background: color-mix(in srgb, var(--rule) 45%, transparent);
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+article code::before,
+article code::after {
+  content: none;
+}
+article hr {
+  border-color: var(--rule);
+  margin: 3em 0;
+}
+.post-heading {
+  margin-top: 38px;
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.post-heading > div {
+  order: 2;
+  font-size: 12px;
+}
+.post-heading h1 {
+  font-size: 27px;
+  letter-spacing: -0.8px;
+  line-height: 1.4;
+  color: var(--ink);
+}
+.post-description {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+}
+.essay {
+  position: relative;
+  font-size: 15px;
+}
+.essay > blockquote:first-child {
+  font-size: 13px;
+  line-height: 1.8;
+}
+.margin-note {
+  position: relative;
+  color: var(--pencil);
+  font-family: "Handwritten", cursive;
+  font-size: 19px;
+  line-height: 1.35;
+  margin: 22px 0;
+  padding-left: 28px;
+  max-width: 270px;
+}
+.margin-note svg {
+  width: 45px;
+  height: 25px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+  position: absolute;
+  left: -22px;
+  top: 0;
+}
+.margin-note p {
+  font-family: inherit;
+  margin: 0;
+}
+@media (min-width: 1120px) {
+  .essay .margin-note {
+    position: absolute;
+    left: calc(100% + 48px);
+    width: 153px;
+    margin: 0;
+    padding: 0;
+  }
+  .essay .margin-note svg {
+    left: -48px;
+    top: 0;
+  }
+}
+.sketch {
+  margin: 42px 0;
+}
+.sketch img {
+  width: 100%;
+  height: auto;
+  max-height: 460px;
+  object-fit: contain;
+}
+.sketch figcaption {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 18px;
+}
+.sketch figcaption a {
+  margin-left: 8px;
+}
+.dark .sketch img {
+  filter: invert(0.86) hue-rotate(165deg);
+}
+
+/* Keep the space between rows inside the next link's hover area. */
+ul.writing-list,
+.writing-list ul {
+  row-gap: 0;
+}
+.writing-list li + li > .writing-row {
+  padding-top: 31px;
+}
+.writing-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 14px;
+  transition: none;
+}
+.writing-row > span {
+  min-width: 0;
+}
+.writing-row > span,
+.writing-row time {
+  opacity: 1;
+  transition: opacity 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.row-title {
+  color: var(--ink);
+}
+.row-description {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.writing-row time {
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+@media (hover: hover) and (pointer: fine) {
+  .writing-list:where(:has(.writing-row:hover)) .writing-row > span,
+  .writing-list:where(:has(.writing-row:hover)) .writing-row time {
+    opacity: 0.3;
+  }
+  .writing-list .writing-row:hover > span,
+  .writing-list .writing-row:hover time {
+    opacity: 1;
+  }
+}
+.writing-list:where(:has(.writing-row:focus-visible)) .writing-row > span,
+.writing-list:where(:has(.writing-row:focus-visible)) .writing-row time {
+  opacity: 0.3;
+}
+.writing-list .writing-row:focus-visible > span,
+.writing-list .writing-row:focus-visible time {
+  opacity: 1;
+}
+.writing-row:active {
+  transform: none;
+}
+.hello-mark {
+  display: inline-block;
+  color: var(--pencil);
+  margin-left: 5px;
+  font-size: 22px;
+  transform: rotate(15deg);
+  transform-origin: 50% 55%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hello-mark {
+    animation: hello-settle 800ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @keyframes hello-settle {
+    0% {
+      transform: rotate(-20deg) scale(0.9);
+    }
+    65% {
+      transform: rotate(23deg) scale(1.04);
+    }
+    100% {
+      transform: rotate(15deg) scale(1);
+    }
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .hello-mark:hover {
+    transform: rotate(75deg) scale(1.08);
+  }
+}
+.animate,
+.animate.show {
+  opacity: 1;
+  transform: none;
+}
+::selection {
+  background: #d7c9aa66;
+  color: inherit;
+}
+@media (max-width: 600px) {
+  header,
+  html.scrolled header {
+    padding-top: 24px;
+  }
+  header nav {
+    gap: 0;
+  }
+  header nav a {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  main {
+    padding-top: 44px;
+  }
+  .site-container {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  article pre {
+    padding: 16px;
+    font-size: 11px;
+  }
+  .post-heading h1 {
+    font-size: 25px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Inline notes point down to the following passage; margin notes point left. */
+.margin-note .note-arrow-side {
+  display: none;
+}
+.margin-note .note-arrow-down {
+  display: block;
+  left: 0;
+  top: auto;
+  bottom: -18px;
+  width: 22px;
+  height: 50px;
+}
+@media (min-width: 1120px) {
+  .essay .margin-note .note-arrow-side {
+    display: block;
+  }
+  .essay .margin-note .note-arrow-down {
+    display: none;
+  }
+}
+
+.note-text {
+  transform: rotate(-3deg);
+  transform-origin: top left;
 }

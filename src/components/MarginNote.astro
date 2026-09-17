@@ -1,0 +1,16 @@
+---
+interface Props {
+  label?: string;
+}
+const { label = "a small note" } = Astro.props;
+---
+
+<aside class="margin-note" aria-label={label}>
+  <svg class="note-arrow-side" viewBox="0 0 64 28" aria-hidden="true">
+    <path d="M61 5C39 2 30 24 4 19m0 0 9-8M4 19l12 6"></path>
+  </svg>
+  <svg class="note-arrow-down" viewBox="0 0 28 64" aria-hidden="true">
+    <path d="M18 4C1 16 5 34 12 57m0 0-9-8m9 8 5-12"></path>
+  </svg>
+  <div class="note-text"><slot /></div>
+</aside>

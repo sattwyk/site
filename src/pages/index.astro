@@ -20,7 +20,7 @@ const projects = (await getCollection("projects"))
 <PageLayout title={HOME.TITLE} description={HOME.DESCRIPTION}>
   <Container>
     <h4 class="animate font-semibold text-black dark:text-white text-lg">
-      hi, i'm satty <span class="inline-block animate-wave">👋</span>
+      hi, i'm satty <span class="hello-mark" aria-hidden="true">✳︎</span>
     </h4>
 
     <div class="space-y-16 mt-8">
@@ -28,40 +28,43 @@ const projects = (await getCollection("projects"))
       <section>
         <article class="space-y-4">
           <p class="animate leading-relaxed">
-            i'm a software engineer interested in backend systems, distributed systems and
-            correctness. currently building <Link
+            i'm a software engineer interested in backend and distributed systems. i like figuring
+            out how they behave when things fail.
+          </p>
+
+          <p class="animate leading-relaxed">
+            currently, i'm building <Link
               href="https://github.com/sattwyk/adversary"
               external
               aria-label="Adversary, a deterministic simulation testing harness"
             >
               adversary
-            </Link>, a deterministic simulation testing harness in rust + webassembly.
+            </Link>, a deterministic simulation testing harness in rust and webassembly.
           </p>
 
           <p class="animate leading-relaxed">
-            i like building things to understand how they work, especially systems that have to
-            behave correctly when things fail. i also write about things i'm learning along the way.
+            i build things to understand them, and write about the parts that make me stop and
+            think.
           </p>
 
           <p class="animate leading-relaxed">
-            apart from writing code, i enjoy cooking, and love reading anything i can get my hands
-            on about <Link
+            away from code, i cook and read philosophy, especially <Link
               href="https://www.conjectureinstitute.org/glossary#critical-rationalism"
               external
               aria-label="Critical Rationalism"
             >
               critical rationalism
-            </Link> and philosophy.
+            </Link>.
           </p>
         </article>
       </section>
       <!-- Latest Posts -->
       <section class="animate space-y-6">
         <div class="flex flex-wrap gap-y-2 items-center justify-between">
-          <h5 class="font-semibold text-black dark:text-white">latest posts</h5>
+          <h5 class="font-semibold text-black dark:text-white">writing</h5>
           <Link href="/blog"> see all posts </Link>
         </div>
-        <ul class="flex flex-col gap-4">
+        <ul class="writing-list flex flex-col gap-4">
           {
             blog.map((post) => (
               <li>
@@ -75,10 +78,10 @@ const projects = (await getCollection("projects"))
       <!-- Recent Projects -->
       <section class="animate space-y-6">
         <div class="flex flex-wrap gap-y-2 items-center justify-between">
-          <h5 class="font-semibold text-black dark:text-white">recent projects</h5>
+          <h5 class="font-semibold text-black dark:text-white">projects</h5>
           <Link href="/projects"> see all projects </Link>
         </div>
-        <ul class="flex flex-col gap-4">
+        <ul class="writing-list flex flex-col gap-4">
           {
             projects.map((project) => (
               <li>
@@ -91,9 +94,9 @@ const projects = (await getCollection("projects"))
 
       <!-- Social / Contact -->
       <section class="animate space-y-4">
-        <h5 class="font-semibold text-black dark:text-white">let's connect</h5>
+        <h5 class="font-semibold text-black dark:text-white">say hello</h5>
         <article>
-          <p class="leading-relaxed">you can find me on social media or shoot me an email.</p>
+          <p class="leading-relaxed">if something here interests you, i'd like to hear from you.</p>
         </article>
         <ul class="flex flex-wrap gap-2">
           {
@@ -116,23 +119,3 @@ const projects = (await getCollection("projects"))
     </div>
   </Container>
 </PageLayout>
-
-<style>
-  @keyframes wave {
-    0%,
-    100% {
-      transform: rotate(0deg);
-    }
-    25% {
-      transform: rotate(20deg);
-    }
-    75% {
-      transform: rotate(-15deg);
-    }
-  }
-
-  .animate-wave {
-    animation: wave 2.5s ease-in-out infinite;
-    transform-origin: 70% 70%;
-  }
-</style>

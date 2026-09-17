@@ -13,8 +13,13 @@ const projects = (await getCollection("projects"))
 <PageLayout title={PROJECTS.TITLE} description={PROJECTS.DESCRIPTION}>
   <Container>
     <div class="space-y-10">
-      <div class="animate font-semibold text-black dark:text-white">things i've built</div>
-      <ul class="animate flex flex-col gap-4">
+      <div class="space-y-3">
+        <h1 class="animate font-semibold text-black dark:text-white">things i've built</h1>
+        <p class="text-sm text-[var(--muted)]">
+          some useful tools, some experiments. each taught me something.
+        </p>
+      </div>
+      <ul class="writing-list animate flex flex-col gap-4">
         {
           projects.map((project) => (
             <li>
