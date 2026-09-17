@@ -1,20 +1,20 @@
 ---
 title: "eva-studio"
-description: "a web based platform for prototyping and monitoring kafka streaming pipelines"
+description: "designing and monitoring kafka pipelines in the browser"
 date: "Jul 22 2022"
 repoURL: "https://github.com/oslabs-beta/evaStudio"
 ---
 
-> this project was built during my time at [codesmith](https://codesmith.io), and is not currently maintained.
+> built during my time at [codesmith](https://codesmith.io). this project is no longer maintained.
 
-a web platform for designing and monitoring real-time streaming data pipelines with apache kafka. built with a team of five developers in four weeks as part of the [os labs](https://opensourcelabs.io) tech accelerator.
+eva-studio is a browser-based tool for designing and monitoring apache kafka pipelines. i built it with four other developers over four weeks at the [os labs](https://opensourcelabs.io) tech accelerator.
 
-the goal was to simplify experimenting with kafka clusters at a smaller scale—drag-and-drop pipeline design, monitoring cluster health, and testing streaming analytics with jupyter or spark before production deployment.
+we wanted a way to experiment with small kafka clusters: draw a pipeline, see how the cluster is doing, and try streaming analytics with jupyter or spark before deploying to production.
 
-we tackled the steep learning curve of integrating kafka, kafka connect, and kafka streams, building a node.js server that communicated with java spring boot microservices to enable real-time data streaming and transformation.
+much of the work was learning how kafka, kafka connect, and kafka streams fit together. our node.js server talked to java spring boot microservices to stream and transform the data.
 
-you can read more about the project on [medium](https://medium.com/@evaStudio/evastudio-v0-1-bd3d98afbf20).
+there's more about the build in our [project write-up](https://medium.com/@evaStudio/evastudio-v0-1-bd3d98afbf20).
 
 ![the team behind evastudio](./team.webp)
 
-_the evastudio team during development_
+_the team during development_

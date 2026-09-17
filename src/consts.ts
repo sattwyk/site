@@ -9,22 +9,23 @@ export const SITE: Site = {
 
 export const HOME: Metadata = {
   TITLE: "hi, i'm satty",
-  DESCRIPTION: "a software engineer with a passion for building things and sharing knowledge.",
+  DESCRIPTION:
+    "software, systems, and what happens when things fail. notes and projects by sattwik raj biswal.",
 };
 
 export const BLOG: Metadata = {
   TITLE: "things i've written",
-  DESCRIPTION: "some of my thoughts on software development, technology, and other musings.",
+  DESCRIPTION: "notes on systems, testing, and things i learn by building.",
 };
 
 export const PROJECTS: Metadata = {
   TITLE: "things i've built",
-  DESCRIPTION: "things i've built and contributed to.",
+  DESCRIPTION: "tools, experiments, and projects i've worked on.",
 };
 
 export const SOCIALS: Socials = [
   {
-    NAME: "twitter-x",
+    NAME: "x",
     HREF: "https://x.com/sattwyk",
   },
   {

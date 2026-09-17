@@ -1,11 +1,11 @@
 ---
 title: "mailmon"
-description: "gmail sync infrastructure for keeping mailbox state correct"
+description: "keeping gmail in sync when notifications and workers fail"
 date: "Jul 30 2026"
 repoURL: "https://github.com/mailmon-dev/mailmon-old"
 ---
 
-> this project is currently not maintained. i've moved on to building [adversary](https://github.com/sattwyk/adversary), but i want to come back to mailmon at some point and probably rewrite the core in rust.
+> not currently maintained. i'm now building [adversary](https://github.com/sattwyk/adversary).
 
 mailmon started as an ai email assistant, but over time the part i found more interesting was everything underneath it: keeping a local view of a gmail mailbox correct while notifications can be duplicated, delayed or missed and workers can fail halfway through doing something.
 

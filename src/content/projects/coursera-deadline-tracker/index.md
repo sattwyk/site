@@ -1,14 +1,14 @@
 ---
 title: "coursera deadline tracker"
-description: "browser extension + telegram bot for tracking degree deadlines"
+description: "coursera deadlines, delivered to telegram"
 date: "Feb 23 2026"
 repoURL: "https://github.com/sattwyk/coursera-deadline-tracker"
 ---
 
-a browser extension and telegram bot for tracking coursera degree deadlines without constantly checking the platform manually. built this because coursera's native notifications aren't reliable enough when you're juggling multiple courses.
+i built this because i kept having to check coursera for deadlines. its notifications weren't reliable enough for keeping track of several courses at once.
 
-the extension captures your coursera session and syncs deadlines to a telegram bot. you get filtered views (upcoming, pending, overdue), inline buttons for quick navigation, and on-demand syncs. no manual deadline tracking in spreadsheets or setting calendar reminders.
+it's a browser extension and a telegram bot. the extension uses your coursera session to read the degree dashboard and sync deadlines. in telegram, you can see what's upcoming, pending, or overdue, jump to a course, and request a fresh sync.
 
-built with wxt for the chrome extension, cloudflare workers for the backend api, and d1 (cloudflare's sqlite) for persistence. the extension reads your degree dashboard page and sends structured deadline data to the worker, which handles telegram webhook integration and deadline state management.
+the extension uses wxt. a cloudflare worker handles the API and telegram webhooks, and D1 stores the deadline state.
 
-actively using this for my degree courses. turns out telegram is a better deadline management interface than coursera's actual dashboard.
+i use it for my own degree courses. it turns out i'd rather check a telegram message than open the dashboard again.

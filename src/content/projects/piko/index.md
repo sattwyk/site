@@ -1,12 +1,12 @@
 ---
 title: "piko"
-description: "simple reverse proxy to bypass CORS"
+description: "a small reverse proxy for browser requests"
 date: "Jan 22 2026"
 repoURL: "https://github.com/sattwyk/piko"
 ---
 
-a lightweight reverse proxy for bypassing CORS restrictions in browser environments. sometimes you just need to make a request without fighting preflight checks.
+piko is a small reverse proxy for browser requests that run into CORS restrictions. the browser talks to the proxy, which forwards the request and returns a response with cross-origin access enabled.
 
-built with nitro so it deploys anywhere—cloudflare workers, aws lambda, netlify edge, or plain node. handles protected header rewrites (X-\* mappings), always allows cross-origin requests, and includes optional turnstile integration to prevent abuse.
+it's built with nitro, with deployment options including cloudflare workers, aws lambda, netlify edge, and node. it supports protected-header rewrites through X-\* mappings and optional turnstile verification.
 
-useful for quick prototypes or when you need a simple proxy without spinning up a full backend. the jwt flow lets you verify the client once with turnstile, then reuse the token for subsequent requests.
+with turnstile enabled, a client can verify once and reuse a JWT for later requests. useful for a prototype that needs to make requests without building a whole backend around them.
