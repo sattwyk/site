@@ -1,0 +1,478 @@
+---
+title: "the generator strikes back"
+description: "swarm testing data structures in rust"
+date: "Sep 15 2026"
+---
+
+import MarginNote from "../../../components/MarginNote.astro";
+import Sketch from "../../../components/Sketch.astro";
+
+> this post started with matklad’s [“Swarm Testing Data Structures”](https://tigerbeetle.com/blog/2025-04-23-swarm-testing-data-structures/) on the TigerBeetle blog. swarm testing goes back at least to [Groce et al.’s 2012 ISSTA paper](https://agroce.github.io/issta12.pdf). i wanted to understand what the idea looks like in Rust—and why changing the generator works in the first place.
+
+random testing sounds like it should eventually find everything.
+
+take the operations a data structure supports, pick one at random, execute it, and repeat a few thousand times. for a queue, that might look like this:
+
+```text
+push(8) → push(3) → pop → push(12) → pop → pop → push(7)
+```
+
+run the same program against your implementation and something boring like `VecDeque`. if they ever disagree, you found a bug.
+
+this is already a pretty good test. but there is a problem:
+
+<MarginNote>this is the bit that sent me down the rabbit hole.</MarginNote>
+
+**random execution does not imply diverse execution.**
+
+## a queue that almost never gets large
+
+suppose our queue has just two interesting operations: `push` and `pop`. the obvious generator chooses each with equal probability.
+
+```swarm-math
+push = 50%
+pop  = 50%
+```
+
+run that for 10,000 operations. sounds like a lot of coverage.
+
+but look at what the queue length is doing. a push moves it up by one. a pop moves it down by one, unless we’re already at zero. the length behaves like a random walk with a reflecting boundary:
+
+```swarm-math
+0 → 1 → 2 → 1 → 0 → 1 → 0 → 1 → 2 → 3 → 2 …
+```
+
+away from zero, this walk has no drift: pushes and pops cancel in expectation. at zero there is a small upward bias, because a pop cannot make the length negative. that boundary matters, but it doesn’t turn the walk into sustained linear growth.
+
+its typical maximum grows on the scale of `√n`, not `n`. after 10,000 operations, sizes on the order of a hundred are natural. this is a scale, not a ceiling; larger excursions are possible.
+
+<MarginNote>10,000 operations ≠ a queue of 10,000 things.</MarginNote>
+
+what if the bug lives around `1023`, `1024`, or `1025`? or only appears after thousands of objects have accumulated? generating another million operations is a surprisingly indirect way of asking the tester to go there.
+
+the issue isn’t insufficient randomness. it’s that **the generator itself has a shape**.
+
+## random traces are not as different as they look
+
+let `K` be the number of pushes in an `n`-operation run. with a fixed 50/50 generator:
+
+```swarm-math
+K ~ Binomial(n, 0.5)
+
+E[K] = n / 2
+sd(K) = √n / 2
+```
+
+for 10,000 operations, the expected count is 5,000 and the standard deviation is only 50. so despite the absurd number of possible traces, almost every long trace has roughly the same global composition:
+
+```text
+run 1    4,951 pushes    5,049 pops
+run 2    5,034 pushes    4,966 pops
+run 3    4,992 pushes    5,008 pops
+```
+
+the exact order changes constantly. the **kind of workload** barely changes.
+
+that’s the part i had missed. generating lots of traces from one fixed distribution can still mean repeatedly visiting the same narrow region of workload space.
+
+## swarm the generator
+
+the useful idea is to move randomness up one level. instead of fixing the operation mix forever, choose it once at the start of each run, then keep it fixed for that run.
+
+```text
+             push    pop
+run 1         91%     9%
+run 2          8%    92%
+run 3         54%    46%
+```
+
+now the test isn’t only asking “what operation happens next?” it is also asking “what kind of workload is this entire execution?”
+
+with `push = 90%` and `pop = 10%`, the expected size change away from empty is:
+
+```swarm-math
+(+1 × 0.9) + (−1 × 0.1) = +0.8 per operation
+```
+
+now the queue has strong positive drift. after 10,000 operations, its natural scale is thousands of elements rather than hundreds. we haven’t changed `push` or `pop`. we changed the process generating the program.
+
+## more than “just bias the test”
+
+there’s a nice mathematical result hiding here. suppose we choose `p ~ Uniform(0, 1)` once per run, then push with probability `p` and pop with probability `1 − p` for all `n` steps.
+
+under fixed `p = 0.5`, the push count concentrates near `n / 2`. under this two-level generator:
+
+```swarm-math
+P(K = k) = 1 / (n + 1),  for k = 0, 1, …, n
+```
+
+<Sketch
+  name="distribution"
+  alt="Two schematic distributions of push counts: a narrow peak around n/2 for fixed 50/50 sampling, and equal probability for every count from zero to n when p is uniform per run."
+  caption="Push-count probabilities, shown schematically; the vertical scales differ."
+/>
+
+<MarginNote>uniform over counts, not over individual traces.</MarginNote>
+
+if you want to see why, average the binomial probability over all possible values of `p`:
+
+```swarm-math
+P(K = k) = C(n,k) ∫₀¹ pᵏ(1−p)ⁿ⁻ᵏ dp
+         = C(n,k) · k!(n−k)! / (n+1)!
+         = 1 / (n+1)
+```
+
+fixed IID sampling gives a standard deviation of order `√n` in global composition. a run-level distribution with nonzero variance can give order `n` variation. for this uniform example, `Var(K) = n(n + 2) / 12`.
+
+that’s a different probability distribution over whole executions. it can turn some rare states into ordinary ones. it doesn’t make every state equally likely, and the uniform-count identity applies to this particular choice of `p`, not to every weighted swarm.
+
+historically, swarm testing puts particular emphasis on **omitting features from individual runs**. varying weights is a useful extension of that idea. we’ll use both below.
+
+## an important qualification
+
+if i already knew the bug lived behind a huge queue, swarm testing would be unnecessary. i’d choose `push = 95%`, `pop = 5%` and go directly there.
+
+the value is that i usually **don’t know which regime contains the bug**. maybe the structure is almost always empty. maybe it’s repeatedly cleared. maybe it grows for a long time. maybe reads vastly outnumber writes.
+
+instead of betting the whole testing budget on one workload, vary the workloads themselves.
+
+## representing the program in rust
+
+say we’re writing a custom `Queue<T>` with `new`, `push`, `pop`, `front`, `clear`, and `len`. we can use `VecDeque` as the reference model and make the command language explicit.
+
+these snippets use the `rand 0.9` / `rand_chacha 0.9` APIs. `Queue` is the implementation you supply; this is a test harness, not a queue implementation.
+
+```rust
+use std::collections::VecDeque;
+use rand::{Rng, SeedableRng};
+use rand_chacha::ChaCha8Rng;
+
+#[derive(Clone, Copy, Debug)]
+enum Action {
+    Push(u32),
+    Pop,
+    Front,
+    Clear,
+}
+```
+
+putting the value inside `Push` means each action is a complete instruction. the interpreter itself doesn’t need randomness. that makes saved traces easier to replay and shrink.
+
+```rust
+fn execute(
+    action: Action,
+    queue: &mut Queue<u32>,
+    model: &mut VecDeque<u32>,
+    context: &str,
+) {
+    match action {
+        Action::Push(value) => {
+            queue.push(value);
+            model.push_back(value);
+        }
+        Action::Pop => {
+            assert_eq!(queue.pop(), model.pop_front(), "{context}");
+        }
+        Action::Front => {
+            assert_eq!(queue.front(), model.front(), "{context}");
+        }
+        Action::Clear => {
+            queue.clear();
+            model.clear();
+        }
+    }
+}
+```
+
+here `front()` is assumed to return `Option<&u32>`, and `pop()` returns `Option<u32>`. adapt those calls if your API differs.
+
+<Sketch
+  name="interpreter"
+  alt="A concrete action and value enter one interpreter, which runs both VecDeque and Queue, compares the results, and checks representation invariants."
+  caption="The same instruction goes to both implementations."
+/>
+
+the input isn’t really a bag of random values anymore. **it’s a generated program.**
+
+## where rust differs from zig
+
+TigerBeetle uses Zig’s comptime reflection to derive the operation enum from the type’s declarations. adding a public operation can make an exhaustive test switch stop compiling until that operation is handled.
+
+stable Rust doesn’t have general compile-time reflection over inherent methods. we can’t ask “give me all public methods on `Queue`” and automatically get an enum back.
+
+but an explicit enum gives us a useful boundary. add `Action::Contains`, and every exhaustive interpreter must handle it. don’t hide missing cases behind a wildcard arm.
+
+<MarginNote>
+  the compiler checks the enum. keeping it in sync with the API is still our job.
+</MarginNote>
+
+that is weaker than automatically discovering a new queue method, but still valuable. extending the generated language creates compiler work when the tester doesn’t understand the new behavior. a trait or procedural macro could couple the implementation and testing APIs more tightly.
+
+## a simple swarm
+
+now give each operation a weight:
+
+```rust
+#[derive(Debug)]
+struct Swarm {
+    push: u32,
+    pop: u32,
+    front: u32,
+    clear: u32,
+}
+
+impl Swarm {
+    fn random(rng: &mut impl Rng) -> Self {
+        fn weight(rng: &mut impl Rng, enabled: f64) -> u32 {
+            if rng.random_bool(enabled) {
+                rng.random_range(1..=100)
+            } else {
+                0
+            }
+        }
+
+        let mut swarm = Self {
+            push: weight(rng, 0.75),
+            pop: weight(rng, 0.75),
+            front: weight(rng, 0.5),
+            clear: weight(rng, 0.25),
+        };
+        if swarm.total() == 0 {
+            swarm.push = 1;
+        }
+        swarm
+    }
+
+    fn total(&self) -> u32 {
+        self.push + self.pop + self.front + self.clear
+    }
+}
+```
+
+these enable probabilities are design choices, not magic constants. the fallback gives us a nonempty configuration, with a little extra probability assigned to push-only runs.
+
+**zero matters.** one run may remove `clear` completely. another may have no reads. another may consist entirely of pushes.
+
+<MarginNote>sometimes the best way to test more is to allow less.</MarginNote>
+
+features can interfere with each other. a frequent `clear` can prevent a queue from becoming large; a finite trace also has limited room. removing one feature lets another drive the system into states it rarely reaches otherwise.
+
+selection is straightforward:
+
+```rust
+impl Swarm {
+    fn choose(&self, rng: &mut impl Rng) -> Action {
+        // At most 400 with the bounds used above.
+        let mut pick = rng.random_range(0..self.total());
+        for (index, weight) in [
+            self.push, self.pop, self.front, self.clear,
+        ].into_iter().enumerate() {
+            if pick < weight {
+                return match index {
+                    0 => Action::Push(rng.random()),
+                    1 => Action::Pop,
+                    2 => Action::Front,
+                    3 => Action::Clear,
+                    _ => unreachable!(),
+                };
+            }
+            pick -= weight;
+        }
+        unreachable!("nonzero total covers every pick")
+    }
+}
+```
+
+then choose a configuration once and execute:
+
+```rust
+fn run(seed: u64, steps: usize) {
+    let mut rng = ChaCha8Rng::seed_from_u64(seed);
+    let swarm = Swarm::random(&mut rng);
+    let mut queue = Queue::new();
+    let mut model = VecDeque::new();
+
+    // Printed before execution, so a panic inside Queue keeps its seed.
+    eprintln!("seed={seed} steps={steps} swarm={swarm:?}");
+
+    for step in 0..steps {
+        let action = swarm.choose(&mut rng);
+        let context = format!(
+            "seed={seed} step={step} swarm={swarm:?} action={action:?}"
+        );
+        execute(action, &mut queue, &mut model, &context);
+        assert_eq!(queue.len(), model.len(), "{context}");
+        // queue.check_invariants(); // add for your representation
+    }
+}
+```
+
+all comparisons now include the reproduction context, not just the length check. for a production harness, also keep the concrete action prefix, especially if the implementation can panic before a comparison.
+
+<Sketch
+  name="hierarchy"
+  alt="One seed chooses operation weights and a value mode for a run, then generates concrete actions, which are executed and checked. Save the seed and failing trace."
+  caption="Search the programs and the processes that generate them."
+/>
+
+## arguments have regimes too
+
+operations are only one dimension. `rng.random::<u32>()` almost never produces an entire workload like these:
+
+```text
+0, 0, 0, 0, 0       always zero
+1, 1, 1, 1, 1       one repeated value
+0, 1, 2, 3, 4       increasing
+4, 3, 2, 1, 0       decreasing
+0, 1, 0, 1, 0       alternating
+```
+
+so values can have a run-level regime too:
+
+```rust
+enum ValueMode {
+    Zero,
+    SmallRange,
+    Repeated,
+    Increasing,
+    Random,
+}
+```
+
+this is an extension to the harness above. select the mode once, keep any state it needs, and use it when constructing `Action::Push(value)`. for `Repeated`, choose a value once; for `Increasing`, decide explicitly whether overflow wraps or ends the sequence.
+
+one run might combine mostly pushes with integers from `0..=3`. another might balance pushes and pops while values increase. another might push nothing but zero.
+
+once you start thinking this way, workload design becomes the interesting part of randomized testing.
+
+## weights are only the simplest generator
+
+these traces have the same counts:
+
+```text
+push pop push pop push pop
+
+push push push pop pop pop
+```
+
+but a stateful system can behave very differently under them. fixed categorical weights can produce either trace by chance, but they don’t explicitly model bursts, phases, periodicity, correlation, or feedback.
+
+the same issue becomes clearer in a distributed system. 10% packet loss scattered independently through a run is very different from a long partition surrounded by healthy periods—even with the same average loss rate.
+
+so fixed swarm weights aren’t the final abstraction. they’re the simplest useful example. richer generators might introduce:
+
+```text
+run-level world
+    ↓
+phase-level regime
+    ↓
+event-level decisions
+```
+
+or move from fixed IID choices to run-level weights, phase-based workloads, Markov workloads, state-dependent generators, and feedback-directed search. these are complementary tools, not a mandatory ladder.
+
+the idea survives: **the process generating the execution is itself part of the search space.**
+
+## the reference model isn’t the only oracle
+
+the model gives us one check: `Queue` behaves like `VecDeque`. this is model-based testing—comparing sampled executions with a reference—not exhaustive model checking.
+
+if we own the implementation, we can inspect representation invariants too. for a linked queue:
+
+```swarm-math
+reachable nodes == len
+
+len == 0  ⇒  head is None AND tail is None
+len > 0   ⇒  head is Some AND tail is Some
+
+tail is the final reachable node
+next pointers never form a cycle
+```
+
+check these after every generated action. make the invariant checker cycle-safe itself; a traversal that loops forever won’t give you a useful failure.
+
+internal state can become corrupted long before the public API returns a wrong answer. i’d rather fail on the operation that breaks the representation than hundreds of operations later, when a `pop()` finally exposes it.
+
+## deterministic randomness
+
+random tests should still behave like normal tests when they fail. for this single-threaded harness, everything comes from one seeded generator. a useful report looks like:
+
+```text
+seed: 938182837812
+step: 1847
+
+swarm: push=91 pop=7 front=2 clear=0
+action: Pop
+expected: Some(72)
+actual: None
+```
+
+reproduction becomes:
+
+```rust
+run(938182837812, 10_000);
+```
+
+<MarginNote>random search finds it. a regression test remembers it.</MarginNote>
+
+keep the generator version and dependency lockfile too. the same seed is only a replay recipe while the algorithm and sequence of random draws stay the same. saving the concrete trace survives more changes than a seed alone.
+
+for concurrent or distributed tests, you also need to control scheduling, time, and other nondeterministic inputs. a seeded RNG by itself doesn’t make those systems deterministic.
+
+once the bug is understood, its minimized counterexample belongs in the permanent regression suite.
+
+## where proptest and fuzzing fit
+
+swarm testing isn’t an alternative to property-based testing or fuzzing. it’s a way of constructing generators.
+
+`proptest` could generate swarm configurations or concrete action sequences. `cargo-fuzz` could mutate encoded configurations or action streams. each can feed the same interpreter and use the same comparison and invariants.
+
+there’s a practical wrinkle: changing a seed can replace the entire execution. if you want shrinking or coverage-guided mutation to make small, useful changes, expose structured parameters and concrete actions instead of making everything an opaque seed.
+
+coverage-guided fuzzing is especially good at following new control flow. but meaningful semantic states don’t always correspond to new coverage. queues containing 10, 100, 1,000, and 10,000 elements might execute nearly the same paths.
+
+occupancy still matters. exposing those dimensions through the workload generator can complement implementation-level feedback.
+
+## this isn’t really about queues
+
+the queue is useful because its state is easy to picture. the same question applies elsewhere:
+
+> what generator regimes produce meaningfully different executions of this system?
+
+for a **hash table**, vary inserts, deletes, and lookups; unique and duplicate keys; occupancy and resize pressure; good hashes and deliberately colliding keys.
+
+for an **allocator**, vary sizes and lifetimes. try steady state, mixed sizes, and fragmentation-heavy churn.
+
+for a **cache**, vary the hot set, working set, and locality. try sequential scans, random access, read-heavy and write-heavy traffic, stable residency, and constant eviction.
+
+for a **distributed system**, vary latency, loss, partitions, crash/restart cycles, concurrency, and contention. the timing and correlation of failures matter as much as their frequency.
+
+the weighted sampler is easy. identifying the dimensions that change the character of execution is the real testing work.
+
+## search the processes that generate programs
+
+i started with the idea that random testing means repeatedly asking:
+
+> what operation should happen next?
+
+swarm testing adds another question:
+
+> what kind of world should generate this execution?
+
+that turns out to be the more interesting one. a fixed generator can produce millions of traces while keeping some global characteristics almost constant. varying the generator changes the probability measure over whole executions.
+
+operation mix is only the beginning. value distributions, locality, failure rates, contention, phase structure, correlation, and state-dependent choices all belong in the picture.
+
+so the rule i want to keep is a little broader than “randomize the distribution.”
+
+<MarginNote>the generator is part of the test’s imagination.</MarginNote>
+
+**don’t only search programs. search the processes that generate programs.**
+
+sometimes that process is just `push = 90%`, `pop = 10%`. sometimes it’s a multi-phase workload with failures, recovery, and state-dependent decisions.
+
+the useful part is realizing that the generator is not neutral. it determines which worlds your supposedly random tests are capable of seeing.
+
+---
+
+**credit & further reading.** matklad’s [Swarm Testing Data Structures](https://tigerbeetle.com/blog/2025-04-23-swarm-testing-data-structures/) is what sent me down this particular rabbit hole. the earlier [Swarm Testing](https://agroce.github.io/issta12.pdf), by Alex Groce, Chaoqiang Zhang, Eric Eide, Yang Chen, and John Regehr (ISSTA 2012), develops the feature-omission idea. the probability calculation here is a separate two-operation example, not a claim that the Rust sampler produces uniform push counts.
